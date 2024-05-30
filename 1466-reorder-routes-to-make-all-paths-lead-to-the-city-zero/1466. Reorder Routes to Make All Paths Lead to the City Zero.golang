@@ -1,0 +1,68 @@
+type Node struct {
+	val     int
+	sources map[int]*Node
+	dests   map[int]*Node
+}
+
+func minReorder(n int, connections [][]int) int {
+	queue := []*Node{}
+
+	cityZero := preprocess(connections)
+	queue = append(queue, cityZero)
+
+	return processGraph(queue)
+}
+
+func processGraph(queue []*Node) int {
+	numReorder := 0
+	for len(queue) > 0 {
+		curCity := queue[0]
+		queue = queue[1:]
+
+		numReorder += len(curCity.dests)
+		for _, d := range curCity.dests {
+			delete(d.sources, curCity.val)
+			queue = append(queue, d)
+		}
+		for _, s := range curCity.sources {
+			delete(s.dests, curCity.val)
+			queue = append(queue, s)
+		}
+	}
+
+	return numReorder
+}
+
+// Construct the graph and return city zero
+func preprocess(connections [][]int) *Node {
+	var (
+		sourceNode *Node
+		destNode   *Node
+
+		ok bool
+	)
+	createdNodes := map[int]*Node{}
+
+	for _, c := range connections {
+		if sourceNode, ok = createdNodes[c[0]]; !ok {
+			sourceNode = &Node{
+				val:     c[0],
+				sources: map[int]*Node{},
+				dests:   map[int]*Node{},
+			}
+			createdNodes[c[0]] = sourceNode
+		}
+		if destNode, ok = createdNodes[c[1]]; !ok {
+			destNode = &Node{
+				val:     c[1],
+				sources: map[int]*Node{},
+				dests:   map[int]*Node{},
+			}
+			createdNodes[c[1]] = destNode
+		}
+		sourceNode.dests[destNode.val] = destNode
+		destNode.sources[sourceNode.val] = sourceNode
+	}
+
+	return createdNodes[0]
+}
