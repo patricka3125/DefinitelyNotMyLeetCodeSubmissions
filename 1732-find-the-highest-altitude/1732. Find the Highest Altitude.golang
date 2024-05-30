@@ -1,0 +1,10 @@
+func largestAltitude(gain []int) int {
+    var m int
+    var alt int
+    for _, n := range gain {
+        alt += n
+        m = max(m, alt)
+    }
+
+    return m
+}
