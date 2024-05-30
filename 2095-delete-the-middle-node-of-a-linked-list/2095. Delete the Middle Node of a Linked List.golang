@@ -1,0 +1,32 @@
+/**
+ * Definition for singly-linked list.
+ * type ListNode struct {
+ *     Val int
+ *     Next *ListNode
+ * }
+ */
+func deleteMiddle(head *ListNode) *ListNode {
+    fakeHead := ListNode{
+        Next: head,
+    }
+    iterate(&fakeHead, -1)
+
+    return fakeHead.Next
+}
+
+// iterate increments count until the end of the Linked List is reached. 
+// Then, it will remove the middle node
+func iterate(cur *ListNode, count int) (*ListNode, int) {
+        if cur == nil {
+            return nil, count
+        }
+
+        toLink, listLen := iterate(cur.Next, count + 1)
+        cur.Next = toLink
+
+        if count == listLen/2 {
+            return cur.Next, listLen
+        }
+
+        return cur, listLen
+    }
