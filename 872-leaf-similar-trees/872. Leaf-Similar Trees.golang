@@ -1,0 +1,62 @@
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+
+func leafSimilar(root1 *TreeNode, root2 *TreeNode) bool {
+	leaves := make(chan int)
+	quit1, quit2 := make(chan bool), make(chan bool)
+    done := make(chan bool)
+
+	go func() {
+		done <- process(root1, leaves, quit1)
+        close(quit2)
+	}()
+    go func() {
+        done <- process(root2, leaves, quit2)
+        close(quit1)
+    }()
+
+    for i := 0; i < 2; i++ {
+        select {
+            case r := <-done:
+            if !r {
+                return false
+            }
+        }
+    }
+
+	return true
+}
+
+func process(root *TreeNode, leaves chan int, quit chan bool) bool {
+	if root.Left == nil && root.Right == nil {
+		select {
+		case out := <-leaves:
+			if out != root.Val {
+				return false
+			}
+		case <-quit:
+			return false
+		case leaves <- root.Val:
+		}
+		return true
+	}
+
+	if root.Left != nil {
+		if res := process(root.Left, leaves, quit); !res {
+			return false
+		}
+	}
+	if root.Right != nil {
+		if res := process(root.Right, leaves, quit); !res {
+			return false
+		}
+	}
+
+	return true
+}
