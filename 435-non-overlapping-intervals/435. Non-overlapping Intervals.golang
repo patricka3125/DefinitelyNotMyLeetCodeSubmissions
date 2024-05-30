@@ -1,0 +1,35 @@
+// want to remove intervals that overlap, that have the longest range
+// sort
+func eraseOverlapIntervals(intervals [][]int) int {
+	slices.SortFunc(intervals, func(a, b []int) int {
+		if a[0] > b[0] {
+			return 1
+		}
+		if a[0] < b[0] {
+			return -1
+		}
+
+		if a[1] > b[1] {
+			return 1
+		}
+		if a[1] < b[1] {
+			return -1
+		}
+
+		return 0
+	})
+
+
+	numRemove := 0
+	for i := 1; i < len(intervals); i++ {
+		// overlap detected
+		if intervals[i][0] < intervals[i-1][1] {
+            numRemove++
+			if intervals[i-1][1] <= intervals[i][1] {
+				intervals[i-1], intervals[i] = intervals[i], intervals[i-1]
+			}
+		}
+	}
+
+	return numRemove
+}
