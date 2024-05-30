@@ -1,0 +1,99 @@
+type Orange struct {
+    row int
+    col int
+}
+
+func orangesRotting(grid [][]int) int {
+    numMinutes, numFresh := 0, 0
+    arr := []Orange{}
+    nextArr := []Orange{}
+    
+    // Preprocess
+    for r, _ := range grid {
+        for c, _ := range grid[r] {
+            // Add all rotten oranges to the array.
+            if grid[r][c] == 2 {
+                arr = append(arr, Orange{
+                    row: r,
+                    col: c,
+                })
+            }
+            if grid[r][c] == 1 {
+                numFresh++
+            }
+        }
+    }
+   
+    for len(arr) > 0 || len(nextArr) > 0 {
+        if len(arr) == 0 {
+            arr = nextArr
+            nextArr = []Orange{}
+            numMinutes++
+        }
+        
+        nextRotten := arr[0]
+        arr = arr[1:]
+        
+        // check neighbors
+        numFresh -= checkNeighbors(nextRotten, &nextArr, grid)
+    }
+    
+    if numFresh > 0 {
+        return -1
+    }
+    return numMinutes
+}
+
+func checkNeighbors(rotten Orange, arr *[]Orange, grid [][]int) int  {
+    r, c := rotten.row, rotten.col
+    converted := 0
+    // Up neighbor
+    if rotten.row > 0 {
+        if grid[r-1][c] == 1 {
+            *arr = append(*arr, Orange{
+                row: r-1,
+                col: c,
+            })
+            grid[r-1][c] = 2
+            converted++
+        } 
+    }
+    
+    // Left neighbor
+    if rotten.col > 0 {
+        if grid[r][c-1] == 1 {
+            *arr = append(*arr, Orange{
+                row: r,
+                col: c-1,
+            })
+            grid[r][c-1] = 2
+            converted++
+        } 
+    }
+    
+    // Down neighbor
+    if rotten.row < len(grid) - 1 {
+        if grid[r+1][c] == 1 {
+            *arr = append(*arr, Orange{
+                row: r+1,
+                col: c,
+            })
+            grid[r+1][c] = 2
+            converted++
+        } 
+    }
+    
+    // Right neighbor
+    if rotten.col < len(grid[r]) - 1 {
+        if grid[r][c+1] == 1 {
+            *arr = append(*arr, Orange{
+                row: r,
+                col: c+1,
+            })
+            grid[r][c+1] = 2
+            converted++
+        } 
+    }
+
+    return converted
+}
