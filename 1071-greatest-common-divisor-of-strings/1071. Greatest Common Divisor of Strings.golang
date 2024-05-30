@@ -1,0 +1,56 @@
+
+// check for greatest common prefix
+func gcdOfStrings(str1 string, str2 string) string {
+	commonFactors := getCommonFactors(len(str1), len(str2))
+	slices.Sort(commonFactors)
+
+	divisor := str1
+	if len(str2) < len(str1) {
+		divisor = str2
+	}
+
+    for i := len(commonFactors)-1; i >= 0; i-- {
+        d := divisor[:commonFactors[i]]
+        if isDivisible(d, str1) && isDivisible(d, str2) {
+            return d
+        }
+    }
+    return ""
+}
+
+func isDivisible(divisor string, str string) bool {
+	charsLeft := str
+	for len(charsLeft) > 0 {
+		if divisor != charsLeft[:len(divisor)] {
+			return false
+		}
+
+		charsLeft = charsLeft[len(divisor):]
+	}
+	return true
+}
+
+func getCommonFactors(a, b int) []int {
+	// find all factors of smaller int
+	// check which ones work against the larger
+	short, long := a, b
+	if a > b {
+		long, short = a, b
+	}
+
+	factors := []int{}
+	for i := 1; i <= short/2 + 1; i++ {
+		if short%i == 0 {
+			factors = append(factors, i, short/i)
+		}
+	}
+
+	res := []int{}
+	for _, n := range factors {
+		if long%n == 0 {
+			res = append(res, n)
+		}
+	}
+
+	return res
+}
