@@ -1,0 +1,35 @@
+func rob(nums []int) int {
+    // dp arr, where i is index and value is most money robbed for nums[i:]
+    dp := make([]int, len(nums))
+    for i, _ := range dp {
+        dp[i] = -1
+    }
+    
+    // rc returns most money robbed for nums starting at idx
+    var rc func(int) int
+    rc = func(idx int) int {
+        if idx >= len(nums) {
+            return 0
+        }
+        if idx == len(nums) - 1 {
+            return nums[idx]
+        }
+        if dp[idx] >= 0 {
+            return dp[idx]
+        }
+        
+        sum1 := nums[idx] + rc(idx+2)
+        sum2 := nums[idx+1] + rc(idx+3)
+        
+        max := sum1
+        if sum2 > sum1 {
+            max = sum2
+        }
+        
+        dp[idx] = max
+        
+        return max
+    }
+    
+    return rc(0)
+}
