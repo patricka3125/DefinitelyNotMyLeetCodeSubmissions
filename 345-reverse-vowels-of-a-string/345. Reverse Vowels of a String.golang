@@ -1,0 +1,33 @@
+func reverseVowels(s string) string {
+	m := []rune{}
+	isVowel := func(b rune) bool {
+		switch strings.ToLower(string(b)) {
+		case "a":
+			return true
+		case "e":
+			return true
+		case "i":
+			return true
+		case "o":
+			return true
+		case "u":
+			return true
+		}
+		return false
+	}
+
+    for _, b := range s {
+        if isVowel(b) {
+            m = append(m, b)
+        }
+    }
+
+    for i, b := range s {
+        if isVowel(b) {
+            s = s[0:i] + string(m[len(m)-1]) + s[i+1:]
+            m = m[:len(m)-1]
+        }
+    }
+
+    return s
+}
