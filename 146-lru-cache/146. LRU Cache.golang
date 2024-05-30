@@ -1,0 +1,92 @@
+// double linked list plus map
+type LRUCache struct {
+	m    map[int]*Node
+	head *Node
+	tail *Node
+
+	capacity int
+}
+
+type Node struct {
+	key   int
+	value int
+	front *Node
+	back  *Node
+}
+
+func Constructor(capacity int) LRUCache {
+	return LRUCache{
+		m:        map[int]*Node{},
+		capacity: capacity,
+	}
+}
+
+func (this *LRUCache) Get(key int) int {
+	node, ok := this.m[key]
+	if !ok {
+		return -1
+	}
+	this.Reorder(node)
+
+	return node.value
+}
+
+func (this *LRUCache) Reorder(node *Node) {
+	if this.head == node {
+		return
+	}
+	if this.tail == node {
+		this.tail = node.back
+	}
+
+	node.back.front = node.front
+	if node.front != nil {
+		node.front.back = node.back
+	}
+
+	node.front = this.head
+    this.head.back = node
+	node.back = nil
+	this.head = node
+}
+
+func (this *LRUCache) Put(key int, value int) {
+	// check if key exists
+	if node, ok := this.m[key]; ok {
+		node.value = value
+		this.Reorder(node)
+		return
+	}
+
+	newNode := &Node{
+		key:   key,
+		value: value,
+	}
+	this.m[key] = newNode
+
+	// update head
+	newNode.front = this.head
+	if newNode.front != nil {
+		newNode.front.back = newNode
+	}
+	this.head = newNode
+
+	// update tail
+	if this.tail == nil {
+		this.tail = newNode
+	}
+
+	// handle eviction
+	if len(this.m) > this.capacity {
+		delete(this.m, this.tail.key)
+		this.tail = this.tail.back
+		this.tail.front = nil
+	}
+}
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * obj := Constructor(capacity);
+ * param_1 := obj.Get(key);
+ * obj.Put(key,value);
+ */
