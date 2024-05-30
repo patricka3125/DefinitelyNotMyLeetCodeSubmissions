@@ -1,0 +1,26 @@
+func findMaxAverage(nums []int, k int) float64 {
+    var (
+        sum int
+        maxAvg float64
+    )
+
+    // Find the sum of the first window
+    for i := 0; i < k; i++ {
+        sum += nums[i]
+    }
+    maxAvg = float64(sum) / float64(k)
+
+    oldIdx, newIdx := 0, k
+    for i := k; i < len(nums); i++ {
+        sum += nums[newIdx]
+        sum -= nums[oldIdx]
+        if avg := float64(sum) / float64(k); avg > maxAvg {
+            maxAvg = avg
+        }
+
+        oldIdx++
+        newIdx++
+    }
+
+    return maxAvg
+}
