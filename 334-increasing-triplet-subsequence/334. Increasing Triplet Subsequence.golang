@@ -1,0 +1,18 @@
+func increasingTriplet(nums []int) bool {
+    min, minSecond := 0, -1
+    for i, _ := range nums {
+        if nums[i] <= nums[min] {
+            min = i
+            continue
+        }
+        if minSecond == -1 || nums[i] <= nums[minSecond] {
+            minSecond = i
+            continue
+        }
+
+        if nums[i] > nums[minSecond] {
+            return true
+        }
+    }
+    return false
+}
