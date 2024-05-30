@@ -1,0 +1,21 @@
+func canPlaceFlowers(flowerbed []int, n int) bool {
+    var isAdjacent bool
+    spotsAllowed := 0
+
+    for i, _ := range flowerbed {
+        if flowerbed[i] == 0 {
+            if !isAdjacent {
+                spotsAllowed++
+            }
+            isAdjacent = !isAdjacent
+        }
+        if flowerbed[i] == 1 {
+            if isAdjacent {
+                spotsAllowed--
+            }
+            isAdjacent = true
+        }
+    }
+
+    return spotsAllowed >= n
+}
