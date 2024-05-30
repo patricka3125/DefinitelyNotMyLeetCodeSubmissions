@@ -1,0 +1,22 @@
+func maxOperations(nums []int, k int) int {
+    sumDict := map[int]int{}
+    res := 0
+
+    for _, n := range nums {
+        if n >= k {
+            continue
+        }
+
+        // check dict if match exists
+        count, _ := sumDict[k-n]
+        if count > 0 {
+            res++
+            sumDict[k-n] = count - 1
+            continue
+        }
+
+        sumDict[n] += 1
+    }
+
+    return res
+}
