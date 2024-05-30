@@ -1,0 +1,43 @@
+import (
+	"strconv"
+)
+
+func compress(chars []byte) int {
+	curChar := chars[0]
+	count := 1
+	curPos := 0
+
+	for i := 1; i < len(chars); i++ {
+		if chars[i] == curChar {
+			count++
+		} else {
+			chars[curPos] = curChar
+			curPos++
+			if count > 1 {
+				curPos = writeCount(chars, curPos, count)
+			}
+
+			curChar = chars[i]
+			count = 1
+		}
+	}
+
+	chars[curPos] = curChar
+	curPos++
+	if count > 1 {
+		curPos = writeCount(chars, curPos, count)
+	}
+
+	return curPos
+}
+
+func writeCount(b []byte, pos, count int) int {
+	foo := []byte(strconv.Itoa(count))
+
+	for _, n := range foo {
+		b[pos] = n
+		pos++
+	}
+
+	return pos
+}
