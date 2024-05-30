@@ -1,0 +1,24 @@
+func mergeAlternately(word1 string, word2 string) string {
+    merged := ""
+    mergeLen := len(word1) + len(word2)
+    wordToggle := false
+
+    for i := 0; i < mergeLen; i++ {
+        if i/2 == len(word1) {
+            return merged + word2[i/2:]
+        }
+        if i/2 == len(word2) {
+            return merged + word1[i/2:]
+        }
+
+        nextChar := word1[i/2]
+        if wordToggle {
+            nextChar = word2[i/2]
+        }
+
+        merged += string(nextChar)
+        wordToggle = !wordToggle
+    }
+
+    return merged
+}
