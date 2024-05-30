@@ -1,0 +1,73 @@
+const alphabetLen = 26
+
+type Trie struct {
+    rootNode *Node
+}
+
+type Node struct {
+    letter rune
+    nextLetters []*Node
+}
+
+func Constructor() Trie {
+    return Trie{
+        rootNode: &Node{
+            letter: rune(-1),
+            nextLetters: make([]*Node, alphabetLen+1),
+        },
+    }
+}
+
+func (this *Trie) Insert(word string)  {
+    curNode := this.rootNode
+    for _, r := range word {
+        pos := runeToInt(r)
+        if curNode.nextLetters[pos] == nil {
+            curNode.nextLetters[pos] = &Node{
+                letter: r,
+                nextLetters: make([]*Node, alphabetLen+1),
+            }
+        }
+        curNode = curNode.nextLetters[pos]
+    }
+
+    // Mark the end of the word.
+    curNode.nextLetters[len(curNode.nextLetters)-1] = &Node{
+        letter: '*',
+    }
+}
+
+
+func (this *Trie) Search(word string) bool {
+    return this.StartsWith(word + "*")
+}
+
+
+func (this *Trie) StartsWith(prefix string) bool {
+    curNode := this.rootNode
+    for _, r := range prefix {
+        pos := runeToInt(r)
+        if curNode.nextLetters[pos] == nil {
+            return false
+        }
+        curNode = curNode.nextLetters[pos]
+    }
+    return true
+}
+
+func runeToInt(r rune) int {
+    if r == '*' {
+        return alphabetLen
+    }
+
+    return int(r - 'a')
+}
+
+
+/**
+ * Your Trie object will be instantiated and called as such:
+ * obj := Constructor();
+ * obj.Insert(word);
+ * param_2 := obj.Search(word);
+ * param_3 := obj.StartsWith(prefix);
+ */
