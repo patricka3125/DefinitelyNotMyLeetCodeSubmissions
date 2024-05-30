@@ -1,0 +1,64 @@
+import (
+	"container/heap"
+)
+
+type SmallestInfiniteSet struct {
+	nums []int
+	m    map[int]struct{}
+}
+
+func (this *SmallestInfiniteSet) Len() int {
+	return len(this.nums)
+}
+
+func (this *SmallestInfiniteSet) Less(i, j int) bool {
+	return this.nums[i] < this.nums[j]
+}
+
+func (this *SmallestInfiniteSet) Swap(i, j int) {
+	this.nums[i], this.nums[j] = this.nums[j], this.nums[i]
+}
+
+func (this *SmallestInfiniteSet) Push(x any) {
+	this.nums = append(this.nums, x.(int))
+}
+
+func (this *SmallestInfiniteSet) Pop() any {
+	res := this.nums[len(this.nums)-1]
+	this.nums = this.nums[:len(this.nums)-1]
+	return res
+}
+
+func Constructor() SmallestInfiniteSet {
+	s := SmallestInfiniteSet{
+		nums: make([]int, 1000),
+        m: map[int]struct{}{},
+	}
+	for i := 0; i < 1000; i++ {
+		s.nums[i] = i + 1
+		s.m[i] = struct{}{}
+	}
+	heap.Init(&s)
+
+	return s
+}
+
+func (this *SmallestInfiniteSet) PopSmallest() int {
+	k := heap.Pop(this).(int)
+	delete(this.m, k)
+	return k
+}
+
+func (this *SmallestInfiniteSet) AddBack(num int) {
+	if _, ok := this.m[num]; !ok {
+		heap.Push(this, num)
+        this.m[num] = struct{}{}
+	}
+}
+
+/**
+ * Your SmallestInfiniteSet object will be instantiated and called as such:
+ * obj := Constructor();
+ * param_1 := obj.PopSmallest();
+ * obj.AddBack(num);
+ */
