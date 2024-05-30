@@ -1,0 +1,41 @@
+func tribonacci(n int) int {
+    if n == 0 {
+        return 0
+    }
+    if n == 1 || n == 2 {
+        return 1
+    }
+    
+	dp := make([]int, n)
+	dp[0], dp[1], dp[2] = 0, 1, 1
+    
+    var solve func(int) int
+	solve = func(param int) int {
+        var a, b, c int
+		if param - 3 == 0 || dp[param - 3] != 0 {
+			a = dp[param-3]
+		}else {
+            a = solve(param-3)
+            dp[param-3] = a
+        }
+
+        if param - 2 == 0 || dp[param - 2] != 0 {
+			b = dp[param-2]
+		}else {
+            b = solve(param-2)
+            dp[param-2] = b
+        }
+
+        if param - 1 == 0 || dp[param - 1] != 0 {
+			c = dp[param-1]
+		}else {
+            c = solve(param-1)
+            dp[param-1] = c
+        }
+
+		return a + b + c
+	}
+
+	// tribonacci(n)
+	return solve(n)
+}
