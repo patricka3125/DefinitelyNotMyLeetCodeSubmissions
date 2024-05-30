@@ -1,0 +1,48 @@
+/**
+ * Definition for a binary tree node.
+ * type TreeNode struct {
+ *     Val int
+ *     Left *TreeNode
+ *     Right *TreeNode
+ * }
+ */
+func longestZigZag(root *TreeNode) int {
+    // find the max on left side
+    var (
+        traverse func(*TreeNode) (int, int)
+        max int
+    )
+
+    traverse = func(cur *TreeNode) (int, int) {
+        if cur == nil  {
+            return 0, 0
+        }
+        
+        rl, _ := traverse(cur.Right)
+        _, lr := traverse(cur.Left)
+
+        var (
+            left int
+            right int
+        )
+
+        if cur.Left != nil {
+            left = 1 + lr
+        }
+        if cur.Right != nil {
+            right = 1 + rl
+        }
+
+        if left > max {
+            max = left
+        }
+        if right > max {
+            max = right
+        }
+
+        return left, right
+    }
+
+    traverse(root)
+    return max
+}
