@@ -1,0 +1,25 @@
+// Remove duplicates in an increasing array such that an element can appear at most twice
+/*
+Create a map that tracks whether an element has been encountered
+If encountered, track current writing position
+Each iteration write the element to the writing position
+*/
+func removeDuplicates(nums []int) int {
+    if len(nums) == 0 {
+        return 0
+    }
+
+	uniques := map[int]int{}
+	writePos := 0
+	for _, elem := range nums {
+		nums[writePos] = elem
+		if n, _ := uniques[elem]; n > 1 {
+			continue
+		}
+
+		uniques[elem]++
+		writePos++
+	}
+
+    return writePos
+}
